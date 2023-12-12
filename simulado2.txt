@@ -1,0 +1,115 @@
+create database simulado2;
+use simulado2;
+#1
+create table departamento(
+id_departamento int primary key,
+nome varchar(50)
+);
+insert into departamento(id_departamento, nome) values
+(1, 'RH'),
+(2, 'Financeiro'),
+(3, 'Marketing'),
+(4, 'Segurança'),
+(5, 'TI');
+create table funcionario(
+id_funcionario int primary key,
+cpf varchar(11),
+rg varchar(10),
+nome varchar(30),
+sobrenome varchar(100),
+data_nascimento date,
+salario float,
+id_departamento int,
+
+constraint fk_departamento foreign key (id_departamento) references departamento(id_departamento)
+);
+insert into funcionario(id_funcionario, cpf, rg, nome, sobrenome, data_nascimento, salario, id_departamento) values 
+(1, '12345678911', '123', 'Morgana', 'Pithan', '2006-10-05', 20000, 5),
+(2, '78945612314', '321', 'Vanessa', 'Derigo', '2007-04-06', 10000, 3 ),
+(3, '14587963254', '456', 'Joao', 'Teixeira', '2006-02-02', 15000, 2),
+(4, '14752369874', '789', 'Maria', 'Antônia', '2006-05-10', 2000, 1),
+(5, '14523698745', '987', 'Diogo', 'Oliveira', '2005-02-03', 15000, 4);
+create table telefone(
+id_telefone int primary key,
+telefone varchar(50),
+id_funcionario int,
+
+constraint fk_funcionario foreign key (id_funcionario) references funcionario(id_funcionario)
+);
+insert into telefone(id_telefone, telefone, id_funcionario) values
+(1, '123456', 5),
+(2, '654321', 4),
+(3, '147258', 3),
+(4, '369874', 2),
+(5, '125413', 1);
+create table endereco(
+id_endereco int primary key,
+endereco varchar(150),
+cep varchar(9),
+cidade varchar(50),
+id_funcionario int(11),
+
+constraint fk_funcionario_endereco foreign key (id_funcionario) references funcionario(id_funcionario)
+);
+insert into endereco(id_endereco, endereco, cep, cidade, id_funcionario) values
+(1, 'rua 1', '123', 'poa', 2),
+(2, 'rua 2', '321', 'alvorada', 3),
+(3, 'rua 3', '456', 'canoas', 5),
+(4, 'rua 4', '654', 'cidreira', 1),
+(5, 'rua 5', '789', 'cachoeirinha', 4);
+#2
+#a
+select max(salario) from funcionario;
+#b
+select min(salario) from funcionario;
+#c
+select nome from funcionario where nome like '%a%';
+#d
+select sum(salario) from funcionario group by nome and sobrenome;
+#e 
+select nome from funcionario where id_departamento like 1;
+#f 
+select funcionario.nome, departamento.nome
+from funcionario
+join departamento on funcionario.id_departamento = departamento.id_departamento;
+#3
+#a
+CREATE OR REPLACE VIEW salario_max
+AS SELECT max(salario) FROM funcionario;
+select * from salario_max;
+#b
+CREATE OR REPLACE VIEW salario_min
+AS SELECT min(salario) FROM funcionario;
+select * from salario_min;
+#c
+CREATE OR REPLACE VIEW nome_funcionario_com_A
+AS SELECT nome FROM funcionario
+where nome like '%a%';
+select * from nome_funcionario_com_A;
+#d 
+CREATE OR REPLACE VIEW nome_funcionario_com_A
+AS SELECT nome FROM funcionario
+where nome like '%a%';
+select * from nome_funcionario_com_A;
+#e 
+CREATE OR REPLACE VIEW funcionarios_RH
+AS SELECT nome FROM funcionario
+where id_departamento like 1;
+select * from funcionarios_RH;
+#4
+#a
+#mysqldump -u root -p@fundatec simulado2 > simulado_database.sql
+#b
+#mysqldump -u root -p@fundatec simulado2 funcionario > funcionario_table.sql
+#c
+#mysqldump -u root -p@fundatec --no-data simulado2 > estrutura.sql
+drop database simulado2;
+create database simulado2;
+use simulado2;
+show tables;
+#mysql -u root -p@fundatec simulado2 < simulado_database.sql
+select * from funcionario;
+#5
+CREATE USER 'usuario_departamento'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL ON db1.* TO 'jeffrey'@'localhost'; 
+GRANT SELECT ON db2.invoice TO 'jeffrey'@'localhost';
